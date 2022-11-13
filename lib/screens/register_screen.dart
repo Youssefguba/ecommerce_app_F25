@@ -1,6 +1,8 @@
+import 'package:ecommerce_app/screens/login_screen.dart';
 import 'package:ecommerce_app/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -32,6 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 TextFormField(
                   controller: nameController,
+                  textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     hintText: 'Enter your name',
                     border: OutlineInputBorder(),
@@ -51,6 +54,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: emailController,
+                  textInputAction: TextInputAction.next,
+
                   decoration: InputDecoration(
                     hintText: 'Enter your email',
                     border: OutlineInputBorder(),
@@ -59,7 +64,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: passwordController,
-                  obscureText: isObscureText, // false
+                  obscureText: isObscureText, //
+                  textInputAction: TextInputAction.next, // false
                   decoration: InputDecoration(
                     hintText: 'Enter your Password ',
                     border: OutlineInputBorder(),
@@ -78,6 +84,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: secondPasswordController,
+                  textInputAction: TextInputAction.next,
                   obscureText: isObscureTextTwo, // false
                   decoration: InputDecoration(
                     hintText: 'Enter your Password Again',
@@ -101,7 +108,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     print(emailController.text);
                     print(passwordController.text);
 
-                    // false
+                    // validation  done
+                    // match password done
+                    // send data to server done
+                    // if true : go to login done
+                    // if false: error message done
                     if (_formKey.currentState!.validate()) {
                       if (passwordController.text ==
                           secondPasswordController.text) {
@@ -117,6 +128,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                   child: Text('Sign Up'),
                 ),
+                TextButton(onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) {
+                      return LoginScreen();
+                    }
+                  ));
+                }, child: Text('Go to Sign In'),),
               ],
             ),
           ),
@@ -136,8 +154,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
 
       Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return MainScreen();
+        return LoginScreen();
       }));
+
     } on DioError catch (e) {
       print("This is an error : ${e.response}");
       if (e.response!.statusCode == 400) {

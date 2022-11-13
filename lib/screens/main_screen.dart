@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:ecommerce_app/repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_app/model/flash_sale_model.dart';
 import 'package:ecommerce_app/screens/account_screen.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import '../model/category_model.dart';
+import '../model/category_repo_model.dart';
 import 'cart_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -267,43 +269,71 @@ class _MainScreenState extends State<MainScreen> {
         ),
 
         // List of categories
-        Container(
-          height: 100,
-          child: ListView.builder(
-            itemCount: secondListOfCategory.length,
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
+        FutureBuilder<List<CategoryRepoModel>>(
+          future: CategoryRepository().getAllCategories(),
+          builder: (BuildContext context, AsyncSnapshot<List<CategoryRepoModel>> snapshot) {
+
+            final listOfCategories = snapshot.data;
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            }
+
+            if(snapshot.data!.isEmpty) {
+              return Text('List is empty!');
+            }
+
+
+            if(snapshot.connectionState == ConnectionState.none) {
+              return Text('No Internet Connection!');
+            }
+
+            if (snapshot.connectionState == ConnectionState.done) {
               return Container(
                 height: 100,
-                margin: EdgeInsets.symmetric(horizontal: 12),
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 31,
-                      backgroundColor: Color(0xffEBF0FF),
-                      child: CircleAvatar(
-                        child: Image.asset(
-                          secondListOfCategory[index].image,
-                          height: 25,
-                          width: 25,
-                        ),
-                        radius: 30,
-                        backgroundColor: Colors.white,
+                child: ListView.builder(
+                  itemCount: listOfCategories!.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      height: 100,
+                      margin: EdgeInsets.symmetric(horizontal: 12),
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 31,
+                            backgroundColor: Color(0xffEBF0FF),
+                            child: CircleAvatar(
+                              child: Image.network(
+                                listOfCategories[index].image,
+                                height: 25,
+                                width: 25,
+                              ),
+                              radius: 30,
+                              backgroundColor: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            listOfCategories[index].name,
+                            style: TextStyle(
+                              color: Color(0xff9098B1),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      secondListOfCategory[index].title,
-                      style: TextStyle(
-                        color: Color(0xff9098B1),
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               );
-            },
-          ),
+            }
+
+
+            return Container(
+              child: Text('Error Try Again!'),
+            );
+          },
         ),
       ],
     );
