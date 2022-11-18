@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:ecommerce_app/repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_app/model/flash_sale_model.dart';
@@ -8,7 +9,9 @@ import 'package:ecommerce_app/screens/search_screen.dart';
 import 'package:ecommerce_app/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../cubits/category_cubit/category_cubit.dart';
 import '../model/category_model.dart';
 import '../model/category_repo_model.dart';
 import 'cart_screen.dart';
@@ -37,25 +40,54 @@ class _MainScreenState extends State<MainScreen> {
     FlashSaleModel("Product One", 200, "24%", "assets/"),
   ];
 
+  bool isInternetConnected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      // Got a new connectivity status!
+      if (result == ConnectivityResult.none) {
+        setState(() {
+          isInternetConnected = false;
+        });
+      } else {
+        setState(() {
+          isInternetConnected = true;
+        });
+      }
+    });
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ListView(
-        children: [
-          // Top Widget [ Search bar, favorite, notifications ].
-          _topBar(),
+    if (isInternetConnected == false) {
+      return Center(child: Text('No Internet Connection'));
+    }
+    return BlocProvider(
+      create: (context) => CategoryCubit()..getAllCategories(),
+      child: SafeArea(
+        child: ListView(
+          children: [
+            // Top Widget [ Search bar, favorite, notifications ].
+            _topBar(),
 
-          // slider
-          _sliderWidget(),
+            // slider
+            _sliderWidget(),
 
-          SizedBox(height: 10),
+            SizedBox(height: 10),
 
-          // category section
-          _categorySectionWidget(),
+            // category section
+            _categorySectionWidget(),
 
-          // flash section
-          _flashSaleWidget(),
-        ],
+            // flash section
+            _flashSaleWidget(),
+          ],
+        ),
       ),
     );
   }
@@ -268,31 +300,15 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
 
-        // List of categories
-        FutureBuilder<List<CategoryRepoModel>>(
-          future: CategoryRepository().getAllCategories(),
-          builder: (BuildContext context, AsyncSnapshot<List<CategoryRepoModel>> snapshot) {
-
-            final listOfCategories = snapshot.data;
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            }
-
-            if(snapshot.data!.isEmpty) {
-              return Text('List is empty!');
-            }
-
-
-            if(snapshot.connectionState == ConnectionState.none) {
-              return Text('No Internet Connection!');
-            }
-
-            if (snapshot.connectionState == ConnectionState.done) {
+        BlocBuilder<CategoryCubit, CategoryState>(
+          builder: (context, state) {
+            print(state);
+            if (state is CategorySuccess) {
+              final listOfCategories = state.list;
               return Container(
                 height: 100,
                 child: ListView.builder(
-                  itemCount: listOfCategories!.length,
+                  itemCount: listOfCategories.length,
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
@@ -328,13 +344,75 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               );
             }
-
-
-            return Container(
-              child: Text('Error Try Again!'),
-            );
+            return SizedBox();
           },
         ),
+        // List of categories
+        // FutureBuilder<List<CategoryRepoModel>>(
+        //   future: CategoryRepository().getAllCategories(),
+        //   builder: (
+        //     BuildContext context,
+        //     AsyncSnapshot<List<CategoryRepoModel>> snapshot,
+        //   ) {
+        //     print('my connection state : ${snapshot.connectionState}');
+        //     final listOfCategories = snapshot.data;
+        //
+        //     if (snapshot.connectionState == ConnectionState.waiting) {
+        //       return CircularProgressIndicator();
+        //     }
+        //
+        //     if (snapshot.data == null || snapshot.data!.isEmpty) {
+        //       return Text('List is empty!');
+        //     }
+        //
+        //     if (snapshot.connectionState == ConnectionState.none) {
+        //       return Text('No Internet Connection!');
+        //     }
+        //
+        //     if (snapshot.connectionState == ConnectionState.done) {
+        //       return Container(
+        //         height: 100,
+        //         child: ListView.builder(
+        //           itemCount: listOfCategories!.length,
+        //           shrinkWrap: true,
+        //           scrollDirection: Axis.horizontal,
+        //           itemBuilder: (context, index) {
+        //             return Container(
+        //               height: 100,
+        //               margin: EdgeInsets.symmetric(horizontal: 12),
+        //               child: Column(
+        //                 children: [
+        //                   CircleAvatar(
+        //                     radius: 31,
+        //                     backgroundColor: Color(0xffEBF0FF),
+        //                     child: CircleAvatar(
+        //                       child: Image.network(
+        //                         listOfCategories[index].image,
+        //                         height: 25,
+        //                         width: 25,
+        //                       ),
+        //                       radius: 30,
+        //                       backgroundColor: Colors.white,
+        //                     ),
+        //                   ),
+        //                   SizedBox(height: 10),
+        //                   Text(
+        //                     listOfCategories[index].name,
+        //                     style: TextStyle(
+        //                       color: Color(0xff9098B1),
+        //                     ),
+        //                   ),
+        //                 ],
+        //               ),
+        //             );
+        //           },
+        //         ),
+        //       );
+        //     }
+        //
+        //     return SizedBox();
+        //   },
+        // ),
       ],
     );
   }
