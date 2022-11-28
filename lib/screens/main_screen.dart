@@ -15,6 +15,7 @@ import '../cubits/category_cubit/category_cubit.dart';
 import '../model/category_model.dart';
 import '../model/category_repo_model.dart';
 import 'cart_screen.dart';
+import 'category_product_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -59,8 +60,6 @@ class _MainScreenState extends State<MainScreen> {
         });
       }
     });
-
-
   }
 
   @override
@@ -312,32 +311,30 @@ class _MainScreenState extends State<MainScreen> {
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    return Container(
-                      height: 100,
-                      margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 31,
-                            backgroundColor: Color(0xffEBF0FF),
-                            child: CircleAvatar(
-                              child: Image.network(
-                                listOfCategories[index].image,
-                                height: 25,
-                                width: 25,
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => CategoryProductScreen(categoryName: listOfCategories[index].name)));
+                      },
+                      child: Container(
+                        height: 100,
+                        margin: EdgeInsets.symmetric(horizontal: 12),
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 35,
+                              backgroundImage:
+                                  NetworkImage(listOfCategories[index].image),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              listOfCategories[index].name,
+                              style: TextStyle(
+                                color: Color(0xff9098B1),
                               ),
-                              radius: 30,
-                              backgroundColor: Colors.white,
                             ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            listOfCategories[index].name,
-                            style: TextStyle(
-                              color: Color(0xff9098B1),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
