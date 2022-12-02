@@ -1,6 +1,8 @@
 import 'package:ecommerce_app/screens/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'cubits/category_cubit/category_cubit.dart';
 import 'screens/home_screen.dart';
 
 
@@ -13,8 +15,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MainPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(      create: (context) => CategoryCubit()),
+      ],
+      child: MaterialApp(
+        home: MainPage(),
+      ),
     );
   }
 }

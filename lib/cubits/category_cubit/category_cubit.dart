@@ -11,10 +11,6 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   void getAllCategories() async {
     final listOfCategories = await CategoryRepository().getAllCategories();
-
     emit(CategorySuccess(listOfCategories));
   }
-
-
-
 }

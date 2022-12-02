@@ -46,6 +46,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<CategoryCubit>().getAllCategories();
     final subscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
@@ -67,26 +68,23 @@ class _MainScreenState extends State<MainScreen> {
     if (isInternetConnected == false) {
       return Center(child: Text('No Internet Connection'));
     }
-    return BlocProvider(
-      create: (context) => CategoryCubit()..getAllCategories(),
-      child: SafeArea(
-        child: ListView(
-          children: [
-            // Top Widget [ Search bar, favorite, notifications ].
-            _topBar(),
+    return SafeArea(
+      child: ListView(
+        children: [
+          // Top Widget [ Search bar, favorite, notifications ].
+          _topBar(),
 
-            // slider
-            _sliderWidget(),
+          // slider
+          _sliderWidget(),
 
-            SizedBox(height: 10),
+          SizedBox(height: 10),
 
-            // category section
-            _categorySectionWidget(),
+          // category section
+          _categorySectionWidget(),
 
-            // flash section
-            _flashSaleWidget(),
-          ],
-        ),
+          // flash section
+          _flashSaleWidget(),
+        ],
       ),
     );
   }

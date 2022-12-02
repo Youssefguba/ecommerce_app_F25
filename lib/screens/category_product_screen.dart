@@ -29,6 +29,7 @@ class CategoryProductScreen extends StatelessWidget {
       body: FutureBuilder<List<Product>>(
         future: CategoryRepository().getProductsByCategory(categoryName),
         builder: (context, snapshot) {
+
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
