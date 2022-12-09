@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -10,7 +12,14 @@ class CategoryCubit extends Cubit<CategoryState> {
   CategoryCubit() : super(CategoryInitial());
 
   void getAllCategories() async {
-    final listOfCategories = await CategoryRepository().getAllCategories();
-    emit(CategorySuccess(listOfCategories));
+    try {
+      emit(LoadingCategories());
+      final listOfCategories = await CategoryRepository().getAllCategories();
+      emit(CategorySuccess(listOfCategories));
+    } on SocketException catch (e) {
+      emit(NoInternetConnection());
+    } on Exception catch (e) {
+      emit(ErrorInCategory(e));
+    }
   }
 }

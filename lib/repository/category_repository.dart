@@ -25,7 +25,7 @@ class CategoryRepository {
     return listOfCategories;
   }
 
-  Future<List<Product>> getProductsByCategory(String categoryName) async {
+  Future<List<ProductModel>> getProductsByCategory(String categoryName) async {
     final response =
         await Dio().get('https://dummyjson.com/products/category/$categoryName');
 

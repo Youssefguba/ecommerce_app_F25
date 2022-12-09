@@ -26,8 +26,7 @@ class _MainScreenState extends State<MainScreen> {
   List<CategoryModel> secondListOfCategory = [
     CategoryModel(title: "Man Shirt", image: "assets/images/shirt.png"),
     CategoryModel(title: "Dress", image: "assets/images/dress.png"),
-    CategoryModel(
-        title: "Man Work Equipment", image: "assets/images/man_bag.png"),
+    CategoryModel(title: "Man Work Equipment", image: "assets/images/man_bag.png"),
     CategoryModel(title: "Woman Bag", image: "assets/images/woman_bag.png"),
     CategoryModel(title: "Man Shirt", image: "assets/images/shirt.png"),
   ];
@@ -47,27 +46,24 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     context.read<CategoryCubit>().getAllCategories();
-    final subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      // Got a new connectivity status!
-      if (result == ConnectivityResult.none) {
-        setState(() {
-          isInternetConnected = false;
-        });
-      } else {
-        setState(() {
-          isInternetConnected = true;
-        });
-      }
-    });
+    // final subscription = Connectivity()
+    //     .onConnectivityChanged
+    //     .listen((ConnectivityResult result) {
+    //   Got a new connectivity status!
+      // if (result == ConnectivityResult.none) {
+      //   setState(() {
+      //     isInternetConnected = false;
+      //   });
+      // } else {
+      //   setState(() {
+      //     isInternetConnected = true;
+      //   });
+      // }
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isInternetConnected == false) {
-      return Center(child: Text('No Internet Connection'));
-    }
     return SafeArea(
       child: ListView(
         children: [
@@ -195,7 +191,7 @@ class _MainScreenState extends State<MainScreen> {
               crossAxisCount: 2,
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
-              childAspectRatio: 1,
+              childAspectRatio: 0.7,
             ),
           ),
         ),
@@ -300,6 +296,16 @@ class _MainScreenState extends State<MainScreen> {
         BlocBuilder<CategoryCubit, CategoryState>(
           builder: (context, state) {
             print(state);
+
+            if(state is LoadingCategories) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if(state is ErrorInCategory) {
+              return Text('There is an error! ${state.error}');
+            }
             if (state is CategorySuccess) {
               final listOfCategories = state.list;
               return Container(
@@ -339,7 +345,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               );
             }
-            return SizedBox();
+            return Text('Try Again!');
           },
         ),
         // List of categories

@@ -8,15 +8,15 @@ class CategoryProducts {
     required this.limit,
   });
 
-  final List<Product> products;
+  final List<ProductModel> products;
   final int total;
   final int skip;
   final int limit;
 
   factory CategoryProducts.fromJson(Map<String, dynamic> json) =>
       CategoryProducts(
-        products: List<Product>.from(
-            json["products"].map((x) => Product.fromJson(x))),
+        products: List<ProductModel>.from(
+            json["products"].map((x) => ProductModel.fromJson(x))),
         total: json["total"],
         skip: json["skip"],
         limit: json["limit"],
@@ -30,8 +30,8 @@ class CategoryProducts {
       };
 }
 
-class Product {
-  Product({
+class ProductModel {
+  ProductModel({
     required this.id,
     required this.title,
     required this.description,
@@ -58,7 +58,7 @@ class Product {
   final List<String> images;
 
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
+  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         id: json["id"],
         title: json["title"],
         description: json["description"],

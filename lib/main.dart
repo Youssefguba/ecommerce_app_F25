@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/cubits/product_cubit/product_cubit.dart';
 import 'package:ecommerce_app/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +18,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(      create: (context) => CategoryCubit()),
+        BlocProvider(create: (context) => CategoryCubit()),
+        BlocProvider(create: (context) => ProductCubit()),
       ],
       child: MaterialApp(
         home: MainPage(),
