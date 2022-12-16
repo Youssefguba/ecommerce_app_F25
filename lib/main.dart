@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/cubits/cart_cubit/cart_cubit.dart';
 import 'package:ecommerce_app/cubits/product_cubit/product_cubit.dart';
 import 'package:ecommerce_app/screens/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => CategoryCubit()),
         BlocProvider(create: (context) => ProductCubit()),
+        BlocProvider(create: (context) => CartCubit()),
       ],
       child: MaterialApp(
         home: MainPage(),
