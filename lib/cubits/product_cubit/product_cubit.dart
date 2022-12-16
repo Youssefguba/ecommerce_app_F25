@@ -12,4 +12,5 @@ class ProductCubit extends Cubit<ProductState> {
     final productData = await ProductRepository().getSingleProduct(productId);
     emit(GetProductSuccess(productData));
   }
+
 }
